@@ -1,1 +1,45 @@
-# 100-Days-DevOps-Part9
+# 100 Days of DevOps with KodeKloud - Days 81 - 90
+
+We finished up Jenkins and then we'll be focused on Ansible for a while! Almost at the finish line. Lets get it!
+
+## Day 80: Jenkins Chained Builds
+## Day 80: Jenkins Chained Builds
+## Day 80: Jenkins Chained Builds
+## Day 80: Jenkins Chained Builds
+## Day 80: Jenkins Chained Builds
+## Day 80: Jenkins Chained Builds
+## Day 80: Jenkins Chained Builds
+## Day 80: Jenkins Chained Builds
+## Day 80: Jenkins Chained Builds
+## Day 81: Multistage Builds
+
+This was even easier than the last lab. I didn't really need AI for this besides a syntax error I kept running into with my pipeline (there was some open bracket somewhere). The last thing AI did was full-proof my curl test byt adding the `-fsS` flags to show if the curl test forked or failed. That's new to me and I don't mind using AI for that since I'm not a web developer. Other than that, I took my code from previous projects that used mutli-stage builds and edited it. Don't forget to run the Java upgrade command if your Agent node is giving you issues coming online. 
+
+THAT WRAPS UP JENKINS!!! Wow we're learning so much. We're almost there. 
+
+```
+pipeline {
+    agent {
+        label 'stapp01'
+    }
+
+    stages {
+        stage('Deploy') {
+            steps {
+                sh '''
+                    cd /var/www/html/
+                    git checkout master
+                    git pull origin master
+                '''
+            }
+        }
+        stage('Test') {
+            steps {
+                sh '''
+                    curl -fsS http://stlb01:8091
+                '''
+            }
+        }
+    } 
+}
+```
