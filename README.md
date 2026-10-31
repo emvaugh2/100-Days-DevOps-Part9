@@ -11,6 +11,9 @@ We finished up Jenkins and then we'll be focused on Ansible for a while! Almost 
 ## Day 84: Copy Data to App Servers using Ansible
 ## Day 83: Troubleshoot and Create Ansible Playbook
 ## Day 82: Create Ansible Inventory for App Server Testing
+
+Over it today.
+
 ## Day 81: Jenkins Multistage Pipeline
 
 This was even easier than the last lab. I didn't really need AI for this besides a syntax error I kept running into with my pipeline (there was some open bracket somewhere). The last thing AI did was full-proof my curl test byt adding the `-fsS` flags to show if the curl test forked or failed. That's new to me and I don't mind using AI for that since I'm not a web developer. Other than that, I took my code from previous projects that used mutli-stage builds and edited it. Don't forget to run the Java upgrade command if your Agent node is giving you issues coming online. 
