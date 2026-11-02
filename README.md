@@ -6,7 +6,28 @@ We finished up Jenkins and then we'll be focused on Ansible for a while! Almost 
 ## Day 89: Ansible Manage Services
 ## Day 88: Ansible Blockinfile Module
 ## Day 87: Ansible Install Package
+
+
+
 ## Day 86: Ansible Ping Module Usage
+
+This lab was pretty easy too. We needed to make sure the ping module was working between the jumphost and the app servers. The lab pre-provisioned the inventory file. I went into the file and it was missing the `[app_servers]` line. I tried to ping the servers but I received an error talking about host keys. I put this in Google and found a Stack Overflow article (from 9 years ago) that said I needed to create the `ansible.cfg` file and inser tthe following lines
+
+```
+[defaults]
+host_key_checking = false
+```
+Once I did that, I received another error message but it seemed password related because I noticed the original inventory file didn't have the users in there. I added the users too. 
+
+```
+[app_servers]
+stapp01 ansible_user=tony ansible_ssh_pass=Ir0nM@n
+stapp02 ansible_user=steve ansible_ssh_pass=Am3ric@
+stapp03 ansible_user=banner ansible_ssh_pass=BigGr33n
+```
+
+Afterwards, the ping worked!
+
 ## Day 85: Create Files on App Servers using Ansible
 
 This lab was pretty easy too except on particular piece. We needed to create an empty file on all 3 app servers which we previously did. The new part was configuring this file with permissions AND automatically creating the right user and group. Once again, I consulted with the Ansible docs to see the format for the permissions and ownership under the ansible.builtin.file guide. Everything was good except the ownership. We needed the playbook to automatically assign the ownership based on the app server it was on. So tony for stapp01, steve for stapp02, and banner for stapp03. I had no clue how to do this. AI gave me a complicated answer the first time syntax-wise so I asked for a more simple solution. It told me to put the file owner in the inventory file. Then, it gave me the syntax for the owner and group fields in the playbook file. 
