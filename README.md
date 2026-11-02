@@ -5,9 +5,37 @@ We finished up Jenkins and then we'll be focused on Ansible for a while! Almost 
 ## Day 90: Managing ACLs Using Ansible
 ## Day 89: Ansible Manage Services
 ## Day 88: Ansible Blockinfile Module
+
+
+
 ## Day 87: Ansible Install Package
 
+This was was pretty easy as well. We just needed to install `sqlite` on each of the app servers using Ansible. I've done this with NGINX before so I used my inventory file from a few labs ago and used a playbook file from a few months ago to complete this. I swapped out `nginx` for `sqlite` and ran the commands. Everything worked. 
 
+```
+[app_servers]
+stapp01 ansible_user=tony ansible_password=Ir0nM@n ansible_become_password=Ir0nM@n
+stapp02 ansible_user=steve ansible_password=Am3ric@ ansible_become_password=Am3ric@
+stapp03 ansible_user=banner ansible_password=BigGr33n ansible_become_password=BigGr33n
+```
+
+```
+---
+- name: Configure app servers with sqlite
+  hosts: app_servers
+  become: true
+
+  tasks:
+  - name: Upgrade all packages
+    ansible.builtin.yum:
+      name: "*"
+      state: latest
+
+  - name: Install sqlite on app servers
+    ansible.builtin.yum:
+      name: sqlite
+      state: present
+```
 
 ## Day 86: Ansible Ping Module Usage
 
