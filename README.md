@@ -9,7 +9,32 @@ We finished up Jenkins and then we'll be focused on Ansible for a while! Almost 
 ## Day 86: Ansible Ping Module Usage
 ## Day 85: Create Files on App Servers using Ansible
 
+This lab was pretty easy too except on particular piece. We needed to create an empty file on all 3 app servers which we previously did. The new part was configuring this file with permissions AND automatically creating the right user and group. Once again, I consulted with the Ansible docs to see the format for the permissions and ownership under the ansible.builtin.file guide. Everything was good except the ownership. We needed the playbook to automatically assign the ownership based on the app server it was on. So tony for stapp01, steve for stapp02, and banner for stapp03. I had no clue how to do this. AI gave me a complicated answer the first time syntax-wise so I asked for a more simple solution. It told me to put the file owner in the inventory file. Then, it gave me the syntax for the owner and group fields in the playbook file. 
 
+```
+[app_servers]
+stapp01 ansible_user=tony ansible_password=Ir0nM@n ansible_become_password=Ir0nM@n file_owner=tony
+stapp02 ansible_user=steve ansible_password=Am3ric@ ansible_become_password=Am3ric@ file_owner=steve
+stapp03 ansible_user=banner ansible_password=BigGr33n ansible_become_password=BigGr33n file_owner=banner
+```
+
+```
+---
+- name: Create an empty file on App Server 3
+  hosts: app_servers
+  become: true
+
+  tasks:
+  - name: The job
+    ansible.builtin.file:
+      path: /opt/nfsdata.txt
+      state: touch
+      mode: '0644'
+      owner: "{{ file_owner }}"
+      group: "{{ file_owner }}"
+```
+
+I ran a ping command to test connectivity. Then, I ran the playbook and verified the files were there with the proper permissions and ownership. 
 
 ## Day 84: Copy Data to App Servers using Ansible
 
