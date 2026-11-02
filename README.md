@@ -8,9 +8,36 @@ We finished up Jenkins and then we'll be focused on Ansible for a while! Almost 
 ## Day 87: Ansible Install Package
 ## Day 86: Ansible Ping Module Usage
 ## Day 85: Create Files on App Servers using Ansible
+
+
+
 ## Day 84: Copy Data to App Servers using Ansible
 
+The goal of this lab was to create an Ansible playbook that copies file from the jumpbox host to all of the application servers. I created an inventory file from my previous lab with all the three application servers:
 
+```
+[app_servers]
+stapp01 ansible_user=tony ansible_password=Ir0nM@n ansible_become_password=Ir0nM@n
+stapp02 ansible_user=steve ansible_password=Am3ric@ ansible_become_password=Am3ric@
+stapp03 ansible_user=banner ansible_password=BigGr33n ansible_become_password=BigGr33n
+```
+
+Then, I tested connectivity to the servers using `ansible all -i inventory -m ping`. Then, I created my runbook. Now, I went to the Ansible docs so I can try to create this from scratch. The documentation isn't too bad. I found the `ansible.builtin.copy` command on the site and used the examples to come up with this:
+
+```
+---
+- name: Copy file from jumphost to all 3 application servers
+  hosts: app_servers
+  become: true
+
+  tasks:
+  - name: scp for App Servers 
+    ansible.builtin.copy:
+      src: /usr/src/finance/index.html
+      dest: /opt/finance
+```
+
+Now, at first, I created a task for all 3 server until AI reminded me that this playbook will run against all three servers one by one. The inventory file has the credentials as well so I didn't need to state the user and hostname for the remote server. Once I erased that part, my playbook ran smoothly and I verified that the `index.html` file was present on the three machines. Easy peasy. 
 
 ## Day 83: Troubleshoot and Create Ansible Playbook
 
