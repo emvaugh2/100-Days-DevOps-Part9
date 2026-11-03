@@ -4,11 +4,94 @@ We finished up Jenkins and then we'll be focused on Ansible for a while! Almost 
 
 ## Day 90: Managing ACLs Using Ansible
 
+This lab was WAY more involved than the previous one. Okay, the overall gist was to create 3 differently named but empty `.txt` files on each app server. The owner and group needed to be `root` BUT we needed to supply an ACL so that the main user on each app (`tony`, `steve`, and `banner`) all received a certain set of permissions for each of these files. Now, I googled how to put ACLs on files using Ansible and came across the POSIX module. This was pretty easy to follow considering I had to work with ACLs for the RHCSA, however, configuring the playbook had me a bit stomped. This is where AI helped me in my learning. So, I forgot you can create different tasks in your playbook but I didn't know you can create different overall names with their own tasks underneath them. Once AI pointed this out, I figured I could create separate names for each server and define the tasks separately. I reused the old file creation block from a few labs ago. I copied some of the POSIX code from the Ansible documentation and put in my own information. The lab actually made this easier by telling me the exact entity and etype field entries. Once I had that, I was pretty much good. I copied and pasted the code for the next two services and edited it accordingly. There were a few syntax issues but outside of that, AI saved me one more time during the validation check by reminding me that the lab wanted the file ownership to be `root`. I had to go back and add the user and group fields under the file creation block as root. Once I completed that, I got the green check mark!
+
+That wraps up the 90s! Now we're on the final stretch. 
+
+
+```
+---
+- name: Create files and ACLs on stapp01
+  hosts: stapp01
+  become: true
+
+  tasks:
+  - name: Create the file
+    ansible.builtin.file:
+      path: /opt/data/blog.txt
+      state: touch
+      owner: root
+      group: root
+  - name: Set the ACL
+    ansible.posix.acl:
+      path: /opt/data/blog.txt
+      entity: tony
+      etype: group
+      permissions: r
+      state: present
+
+- name: Create files and ACLs on stapp02
+  hosts: stapp02
+  become: true
+
+  tasks:
+  - name: Create the file
+    ansible.builtin.file:
+      path: /opt/data/story.txt
+      state: touch
+      owner: root
+      group: root
+  - name: Set the ACL
+    ansible.posix.acl:
+      path: /opt/data/story.txt
+      entity: steve
+      etype: user
+      permissions: rw
+      state: present
+
+- name: Create files and ACLs on stapp03
+  hosts: stapp03
+  become: true
+
+  tasks:
+  - name: Create the file
+    ansible.builtin.file:
+      path: /opt/data/media.txt
+      state: touch
+      owner: root
+      group: root
+  - name: Set the ACL
+    ansible.posix.acl:
+      path: /opt/data/media.txt
+      entity: banner
+      etype: group
+      permissions: rw
+      state: present
+```
 
 
 ## Day 89: Ansible Manage Services
 
+Well this is weird. I just needed to install `httpd`, start, and enable it on all 3 app servers. I say this is weird because the task was just a subset of what we needed to do from the previous lab. I literally completed this in 5 minutes with validation checks. I guess this is a GREAT demonstration to show the power of automation! Once you make a playbook, you can run it again and again. It makes everybody's lives easier. 
 
+```
+---
+- name: Configure app servers with HTTPD
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Install HTTPD on app servers
+      ansible.builtin.yum:
+        name: httpd
+        state: present
+
+    - name: Start and enable HTTPD
+      ansible.builtin.systemd_service:
+        name: httpd
+        state: started
+        enabled: true
+```
 
 ## Day 88: Ansible Blockinfile Module
 
