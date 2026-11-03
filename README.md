@@ -3,10 +3,49 @@
 We finished up Jenkins and then we'll be focused on Ansible for a while! Almost at the finish line. Lets get it!
 
 ## Day 90: Managing ACLs Using Ansible
+
+
+
 ## Day 89: Ansible Manage Services
+
+
+
 ## Day 88: Ansible Blockinfile Module
 
+For this lab, we needed to use the Blockinfile module. Basically this allows us to insert a block of text into a file if we need to do that. The closest thing I can relate this too is like the triple " ` " feature that we use for strings in Python. So think multiple lines instead of single lines of strings. The overall lab was pretty easy. Yes, I used some AI to correct me syntax but I had to add and remove a few things. One, I keep putting multiple tasks: lines when I only need one. I also needed to create the index.html file itself so I wanted to create a new block of code for this. Apparently I can just add the create: true line to the blockinfile code so create the file. Nice. Other than that, I had to google the systemd_service block because I forgot how to enable the service using Ansible. I've done this before but I googled it so I can see the Ansible documentation. 
 
+Nice lab. Defintely got the green check. 
+
+```
+---
+- name: Configure app servers with HTTPD
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Install HTTPD on app servers
+      ansible.builtin.yum:
+        name: httpd
+        state: present
+
+    - name: Start and enable HTTPD
+      ansible.builtin.systemd_service:
+        name: httpd
+        state: started
+        enabled: true
+
+    - name: Insert content into index.html file
+      ansible.builtin.blockinfile:
+        path: /var/www/html/index.html
+        create: true
+        block: |
+          Welcome to XfusionCorp!
+          This is Nautilus sample file, created using Ansible!
+          Please do not modify this file manually!
+        owner: apache
+        group: apache
+        mode: '0777'
+```
 
 ## Day 87: Ansible Install Package
 
